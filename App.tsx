@@ -1,66 +1,66 @@
 import * as React from 'react';
-import {NavigationContainer, ParamListBase} from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import {Pressable, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
-import {useCallback} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Settings from './src/screens/Settings';
+import Orders from './src/screens/Orders';
+import Delivery from './src/screens/Delivery';
+import {useState} from 'react';
+import SignIn from './src/screens/SignIn';
+import SignUp from './src/screens/SignUp';
 
-type RootStackParamList = {
-  Home: undefined;
-  Details: undefined;
+export type LoggedInParamList = {
+  Orders: undefined;
+  Settings: undefined;
+  Delivery: undefined;
+  Complete: {orderId: string};
 };
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-type DetailsScreenProps = NativeStackScreenProps<ParamListBase, 'Details'>;
 
-function HomeScreen({navigation}: HomeScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Details');
-  }, [navigation]);
+export type RootStackParamList = {
+  SignIn: undefined;
+  SignUp: undefined;
+};
 
-  return (
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <Pressable onPress={onClick}>
-                <Text>Home Screen</Text>
-              </Pressable>
-            </View>
-            <Text style={{flex: 2, backgroundColor: 'yellow', alignItems: 'center'}}>hello</Text>
-          </View>
-  );
-}
-
-function DetailsScreen({navigation}: DetailsScreenProps) {
-  const onClick = useCallback(() => {
-    navigation.navigate('Home');
-  }, [navigation]);
-
-  return (
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Pressable onPress={onClick}>
-              <Text>Details Screen</Text>
-            </Pressable>
-          </View>
-  );
-}
-
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [isLoggedIn, setLoggedIn] = useState(false);
   return (
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="Details">
-              <Stack.Screen
-                      name="Home"
-                      component={HomeScreen}
-                      options={{title: 'Overview'}}
-              />
-              <Stack.Screen name="Details">
-                {props => <DetailsScreen {...props} />}
-              </Stack.Screen>
-            </Stack.Navigator>
-          </NavigationContainer>
+    <NavigationContainer>
+      {isLoggedIn ? (
+        <Tab.Navigator>
+          <Tab.Screen
+            name="Orders"
+            component={Orders}
+            options={{title: '주문 목록'}}
+          />
+          <Tab.Screen
+            name="Delivery"
+            component={Delivery}
+            options={{headerShown: false, title: '배달'}}
+          />
+          <Tab.Screen
+            name="Settings"
+            component={Settings}
+            options={{title: '마이페이지'}}
+          />
+        </Tab.Navigator>
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="SignIn"
+            component={SignIn}
+            options={{headerShown: false, title: '로그인'}}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{title: '회원가입'}}
+          />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
   );
 }
 
