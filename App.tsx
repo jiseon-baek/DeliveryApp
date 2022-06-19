@@ -8,6 +8,7 @@ import Delivery from './src/screens/Delivery';
 import {useState} from 'react';
 import SignIn from './src/screens/SignIn';
 import SignUp from './src/screens/SignUp';
+import {Provider} from 'react-redux';
 
 export type LoggedInParamList = {
   Orders: undefined;
@@ -27,40 +28,42 @@ const Stack = createNativeStackNavigator();
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   return (
-    <NavigationContainer>
-      {isLoggedIn ? (
-        <Tab.Navigator>
-          <Tab.Screen
-            name="Orders"
-            component={Orders}
-            options={{title: '주문 목록'}}
-          />
-          <Tab.Screen
-            name="Delivery"
-            component={Delivery}
-            options={{headerShown: false, title: '배달'}}
-          />
-          <Tab.Screen
-            name="Settings"
-            component={Settings}
-            options={{title: '마이페이지'}}
-          />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="SignIn"
-            component={SignIn}
-            options={{headerShown: false, title: '로그인'}}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{title: '회원가입'}}
-          />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        {isLoggedIn ? (
+          <Tab.Navigator>
+            <Tab.Screen
+              name="Orders"
+              component={Orders}
+              options={{title: '주문 목록'}}
+            />
+            <Tab.Screen
+              name="Delivery"
+              component={Delivery}
+              options={{headerShown: false, title: '배달'}}
+            />
+            <Tab.Screen
+              name="Settings"
+              component={Settings}
+              options={{title: '마이페이지'}}
+            />
+          </Tab.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="SignIn"
+              component={SignIn}
+              options={{headerShown: false, title: '로그인'}}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{title: '회원가입'}}
+            />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </Provider>
   );
 }
 
